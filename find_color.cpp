@@ -10,18 +10,24 @@ int main(int argc, char **argv) {
     //if ( argc != 2 ) // if no argument, exit
     //    exit(1);
     
-    cv::Mat sourceImage, modImage;
-    sourceImage = cv::imread("pic.jpg"); // Load a gray scale picture.
-    if (!sourceImage.data)
+    cv::Mat sauceImg, modImage;
+    sauceImg = cv::imread("calibration.jpg"); // Load a gray scale picture.
+    if (!sauceImg.data)
         exit(1); //can't open, then exit
     
+	//crop
+	cv::Rect crop( 44, 0, 470, 310 );
+	cv::Mat sourceImage = sauceImg( crop );
+
+
     namedWindow("Modified", CV_WINDOW_AUTOSIZE);
+	namedWindow("controlW", CV_WINDOW_AUTOSIZE);
     cv::imshow( "Source", sourceImage );
 	//modImage = sourceImage.clone();
     
     
-    int iLowH = 92;
-    int iHighH = 124;
+    int iLowH = 0;
+    int iHighH = 255;
     
     int iLowS = 0;
     int iHighS = 255;
@@ -31,14 +37,14 @@ int main(int argc, char **argv) {
     
     //Create trackbars in "Control" window
     
-    createTrackbar("LowH", "Modified", &iLowH, 179); //Hue (0 - 179)
-    createTrackbar("HighH", "Modified", &iHighH, 179);
+    createTrackbar("LowH", "controlW", &iLowH, 179); //Hue (0 - 179)
+    createTrackbar("HighH", "controlW", &iHighH, 179);
     
-    createTrackbar("LowS", "Modified", &iLowS, 255); //Saturation (0 - 255)
-    createTrackbar("HighS", "Modified", &iHighS, 255);
+    createTrackbar("LowS", "controlW", &iLowS, 255); //Saturation (0 - 255)
+    createTrackbar("HighS", "controlW", &iHighS, 255);
     
-    createTrackbar("LowV", "Modified", &iLowV, 255); //Value (0 - 255)
-    createTrackbar("HighV", "Modified", &iHighV, 255);
+    createTrackbar("LowV", "controlW", &iLowV, 255); //Value (0 - 255)
+    createTrackbar("HighV", "controlW", &iHighV, 255);
 
 	while(true)
 	{
@@ -67,6 +73,7 @@ int main(int argc, char **argv) {
         
         
 		cv::imshow( "Modified", imgThresholded );
+		cv::imshow( "controlW", NULL);
 
 		if (waitKey(30) == 27) //wait for 'esc' key press for 30ms. If 'esc' key is pressed, break loop
        {
